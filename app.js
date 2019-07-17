@@ -15,6 +15,7 @@ app.use(express.urlencoded({ extended: false }))
 
 app.use('/api/users/', require('./routes/api/users'))
 app.use('/api/auth/', require('./routes/api/auth'))
+app.use('/api/chats/', require('./routes/api/chats'))
 
 const port = 5000
 
