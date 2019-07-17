@@ -1,16 +1,19 @@
 const express = require('express')
+const mongoose = require('mongoose')
+
+require('dotenv').config()
 
 const app = express()
 
-app.get('/api/customers', (req, res) => {
-    const customers = [
-        {id: 1, firstName: 'John', lastName: 'Doe'},
-        {id: 2, firstName: 'Steve', lastName: 'Smith'},
-        {id: 3, firstName: 'Mary', lastName: 'Swanson'}
-    ]
-
-    res.json(customers)
+mongoose.connect(process.env.MONGODB_URI, { useNewUrlParser: true, useCreateIndex: true }, () => {
+    console.log('Connected to mongodb')
 })
+
+app.use(express.static('public'))
+app.use(express.json())
+app.use(express.urlencoded({ extended: false }))
+
+app.use('/api/users/', require('./routes/api/users'))
 
 const port = 5000
 
