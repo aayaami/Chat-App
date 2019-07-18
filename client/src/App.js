@@ -8,6 +8,7 @@ import Register from './components/auth/Register';
 
 import { Provider } from 'react-redux'
 import store from './store'
+import Alert from './components/layout/Alert';
 
 function App() {
   return (
@@ -17,6 +18,7 @@ function App() {
           <Navbar />
           <Route exact path="/" component={Landing} />
           <section className="container">
+            <Alert />
             <Switch>
               <Route exact path="/login" component={Login} />
               <Route exact path="/register" component={Register} />
