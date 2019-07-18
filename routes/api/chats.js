@@ -7,6 +7,25 @@ const Chat = require('../../models/Chat')
 
 
 
+// @route   GET api/chats
+// @desc    Get chats
+// @access  Private
+router.get('/', auth, async (req, res) => {
+    try {
+        const chats = await Chat.find({}).select("name")
+
+        if(!chats) {
+            return res.status(400).json({ msg: 'No chats'})
+        }
+
+        res.json(chats)
+
+    } catch (err) {
+        console.error(err.message)
+        res.status(500).send('Server error')
+    }
+})
+
 // @route   POST api/chats
 // @desc    Make a new chat
 // @access  Private
@@ -269,6 +288,31 @@ router.put('/leave/:chat_id', auth, async (req, res) => {
         }
 
         await chat.save()
+
+        res.json(chat)
+
+    } catch (err) {
+        console.error(err.message)
+        res.status(500).send('Server error')
+    }
+})
+
+// @route   Get api/chats/:chat_id
+// @desc    Get chat
+// @access  Private
+router.get('/:chat_id', auth, async (req, res) => {
+    try {
+        const chat = await Chat.findById(req.params.chat_id)
+
+        if(!chat) {
+            return res.status(401).json({ msg: 'Chat does not exist' })
+        }
+
+        let isMatchUser = await chat.users.map(user => user.user).indexOf(req.user.id)
+
+        if(isMatchUser === -1) {
+            return res.status(400).json({ msg: 'Not authorized'})
+        }
 
         res.json(chat)
 
