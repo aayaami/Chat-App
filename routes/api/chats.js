@@ -297,12 +297,39 @@ router.put('/leave/:chat_id', auth, async (req, res) => {
     }
 })
 
+// @route   Get api/chats/messages/:chat_id
+// @desc    Get chat
+// @access  Private
+router.get('/messages/:chat_id', auth, async (req, res) => {
+    try {
+        const chat = await Chat.findById(req.params.chat_id).select('messages').select('users')
+            .populate({ path:'messages.user', select: 'name' })
+
+        if(!chat) {
+            return res.status(401).json({ msg: 'Chat does not exist' })
+        }
+
+        let isMatchUser = await chat.users.map(user => user.user).indexOf(req.user.id)
+
+        if(isMatchUser === -1) {
+            return res.status(400).json({ msg: 'Not authorized'})
+        }
+
+        res.json(chat)
+
+    } catch (err) {
+        console.error(err.message)
+        res.status(500).send('Server error')
+    }
+})
+
 // @route   Get api/chats/:chat_id
 // @desc    Get chat
 // @access  Private
 router.get('/:chat_id', auth, async (req, res) => {
     try {
         const chat = await Chat.findById(req.params.chat_id)
+            .populate({ path:'messages.user', select: 'name' })
 
         if(!chat) {
             return res.status(401).json({ msg: 'Chat does not exist' })

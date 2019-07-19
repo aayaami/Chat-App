@@ -19,4 +19,23 @@ app.use('/api/chats/', require('./routes/api/chats'))
 
 const port = 5000
 
-app.listen(port, () => console.log(`Server started on port ${port}`))
+const server = app.listen(port, () => console.log(`Server started on port ${port}`))
+
+const io = require('socket.io')(server)
+
+io.on('connection', socket => {
+    
+    socket.on('join chat', (id) => {
+        socket.join(id)
+        console.log(`socket joined chat ${id}`)
+    })
+
+    socket.on('update messages', (id) => {
+        io.to(id).emit('refresh messages')
+    })
+
+    socket.on('leave chat', (id) => {
+        socket.leave(id)
+        console.log(`socket left chat ${id}`)
+    })
+})
