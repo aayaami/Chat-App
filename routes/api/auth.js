@@ -11,7 +11,9 @@ const { check, validationResult } = require('express-validator')
 // @access  Private
 router.get('/', auth, async (req, res) => {
     try {
-        const user = await User.findById(req.user.id).select('-password')
+        const user = await User.findById(req.user.id)
+            .select('-password')
+            .populate({ path:'userChats.chat', select: 'name' })
         res.json(user)
     } catch (err) {
         res.status(500).json({ msg: 'Server error' })

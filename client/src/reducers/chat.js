@@ -1,5 +1,4 @@
-import { GET_CHAT, CLEAR_CHAT, UPDATE_LOCAL_MESSAGES, UPDATE_MESSAGES } from '../actions/types'
-import uuid from 'uuid'
+import { GET_CHAT, CLEAR_CHAT, UPDATE_MESSAGES } from '../actions/types'
 const initialState = {
     chat: null,
     loading: true
@@ -12,23 +11,6 @@ export default function(state = initialState, action) {
             return {
                 chat: payload,
                 loading: false
-            }
-        case UPDATE_LOCAL_MESSAGES:
-            return {
-                ...state,
-                chat: {
-                    ...state.chat,
-                    messages: [
-                        ...state.chat.messages,
-                        {
-                            user: {
-                                name: payload.userName
-                            },
-                            text: payload.text,
-                            _id: uuid.v4()
-                        }
-                    ]
-                }
             }
         case UPDATE_MESSAGES:
             return {

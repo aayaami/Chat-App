@@ -1,6 +1,5 @@
 import axios from 'axios'
-import { GET_CHAT, CLEAR_CHAT, SEND_MESSAGE, REFRESH_MESSAGES, UPDATE_LOCAL_MESSAGES, UPDATE_MESSAGES, GET_CHATS, CHATS_FAIL } from './types'
-import { getChats } from './chats'
+import { GET_CHAT, CLEAR_CHAT, SEND_MESSAGE, UPDATE_MESSAGES, GET_CHATS, CHATS_FAIL } from './types'
 
 // Clear
 export const clearChat = () => dispatch => {
@@ -16,8 +15,9 @@ export const clearChat = () => dispatch => {
 // Get chat if you're it's member
 export const getChat = chat_id => async dispatch => {
     try {
+        console.log(chat_id, 'action')
         const res = await axios.get(`/api/chats/${chat_id}`)
-
+        console.log(res)
         dispatch({
             type: GET_CHAT,
             payload: res.data

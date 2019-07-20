@@ -13,6 +13,7 @@ import { loadUser } from './actions/auth'
 import Chats from './components/chats/Chats'
 import PrivateRoute from './components/routing/PrivateRoute'
 import Chat from './components/chats/Chat';
+import UserChats from './components/chats/UserChats';
 
 if(localStorage.token) {
   setAuthToken(localStorage.token)
@@ -34,6 +35,7 @@ function App() {
               <Route exact path="/login" component={Login} />
               <Route exact path="/register" component={Register} />
               <PrivateRoute exact path="/chats" component={Chats} />
+              <PrivateRoute exact path="/chats/me" component={UserChats} />
               <PrivateRoute exact path="/chats/:chat_id" component={Chat} />
             </Switch>
           </section>

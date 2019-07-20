@@ -34,6 +34,7 @@ io.on('connection', socket => {
         io.to(id).emit('refresh messages')
     })
 
+    
     socket.on('leave chat', (id) => {
         socket.leave(id)
         console.log(`socket left chat ${id}`)

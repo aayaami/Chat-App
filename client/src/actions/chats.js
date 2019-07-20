@@ -44,3 +44,29 @@ export const getChat = chat_id => async dispatch => {
         })
     }
 }
+
+export const joinRequest = (chat_id) => async dispatch => {
+    try {
+        
+        const body = { chat_id: chat_id }
+        const config = {
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        }
+        console.log(body)
+        await axios.put(`/api/chats/joinrequest/${chat_id}`, body, config)
+
+        console.log('wtf')
+        const res = await axios.get('/api/chats')
+
+        dispatch({
+            type: GET_CHATS,
+            payload: res.data
+        })
+    } catch (err) {
+        dispatch({
+            type: CHATS_FAIL
+        })
+    }
+}

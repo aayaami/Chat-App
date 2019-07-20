@@ -12,7 +12,7 @@ const Chat = require('../../models/Chat')
 // @access  Private
 router.get('/', auth, async (req, res) => {
     try {
-        const chats = await Chat.find({}).select("name")
+        const chats = await Chat.find({}).select("name").select("joinRequests")
 
         if(!chats) {
             return res.status(400).json({ msg: 'No chats'})
@@ -42,6 +42,8 @@ router.post('/', auth, [
     const { name } = req.body
 
     try {
+        const user = await User.findById(req.user.id)
+        
         const newChat = new Chat({
             name,
             messages: [],
@@ -52,8 +54,10 @@ router.post('/', auth, [
         newChat.admins.push({ user: req.user.id })
         newChat.users.push({ user: req.user.id, isMember: true })
 
-        await newChat.save()
+        user.userChats.push({chat: newChat._id})
 
+        await newChat.save()
+        await user.save()
         res.json(newChat)
 
     } catch (err) {
@@ -67,22 +71,20 @@ router.post('/', auth, [
 // @access  Private
 router.put('/joinrequest/:chat_id', auth, async (req, res) => {
     try {
+        
         const chat = await Chat.findById(req.params.chat_id)
 
         if(!chat) {
             return res.status(401).json({ msg: 'Chat does not exist' })
         }
-
-        let isMatch = await chat.users.map(user => user.user).indexOf(req.user.id)
+        
+        let isMatch = await chat.joinRequests.map(user => user.user).indexOf(req.user.id)
+        
         if(isMatch !== -1) {
-            isMatch = 1
-        }
-
-        if(isMatch) {
             return res.status(400).json({ errors: [{msg: 'Join request already sent'}] })
-        }
+        } 
 
-        chat.users.push({ user: req.user.id })
+        chat.joinRequests.push({ user: req.user.id })
 
         await chat.save()
 
@@ -328,13 +330,14 @@ router.get('/messages/:chat_id', auth, async (req, res) => {
 // @access  Private
 router.get('/:chat_id', auth, async (req, res) => {
     try {
+        console.log(req.params.chat_id)
         const chat = await Chat.findById(req.params.chat_id)
             .populate({ path:'messages.user', select: 'name' })
 
         if(!chat) {
             return res.status(401).json({ msg: 'Chat does not exist' })
         }
-
+        
         let isMatchUser = await chat.users.map(user => user.user).indexOf(req.user.id)
 
         if(isMatchUser === -1) {

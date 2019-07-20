@@ -17,7 +17,23 @@ const UserSchema = new mongoose.Schema({
     date: {
         type: Date,
         default: Date.now
-    }
+    },
+    userChats: [
+        {
+            chat: {
+                type: mongoose.Schema.Types.ObjectId,
+                ref: 'chats'
+            }
+        }
+    ],
+    invitesToChats: [
+        {
+            chat: {
+                type: mongoose.Schema.Types.ObjectId,
+                ref: 'chats'
+            }
+        }
+    ]
 })
 
 module.exports = User = mongoose.model('user', UserSchema)
