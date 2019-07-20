@@ -3,13 +3,15 @@ import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { getChats } from '../../actions/chats'
 import { Link } from 'react-router-dom'
+import NewChatForm from './NewChatForm';
 
-const Chats = ({ getChats, chats: { chats, loading } }) => {
+const Chats = ({ getChats, chats: { chats }, history }) => {
     useEffect(() => {
         getChats()
     }, [getChats])
     return chats ? (<div>
-        {chats.map(chat => <Link key={chat._id} to={`/chats/${chat._id}`}>{chat.name}</Link>)}
+        <NewChatForm />
+        {chats.map(chat =>  <div key={chat._id} ><Link to={`/chats/${chat._id}`}>{chat.name}</Link></div>)}
     </div>) : (<div>Loading</div>)
 }
 

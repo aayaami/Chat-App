@@ -17,6 +17,22 @@ const ChatSchema = new mongoose.Schema({
             }
         }
     ],
+    joinRequests: [
+        {
+            user: {
+                type: mongoose.Schema.Types.ObjectId,
+                ref: 'user'
+            }
+        }
+    ],
+    bannedUsers: [
+        {
+            user: {
+                type: mongoose.Schema.Types.ObjectId,
+                ref: 'user'
+            }
+        }
+    ],
     admins: [
         {
             user: {

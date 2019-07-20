@@ -7,6 +7,7 @@ import Messages from './Messages'
 import MessageForm from './MessageForm'
 import io from 'socket.io-client'
 
+
 const Chat = ({ 
     auth: { user }, 
     match, 
@@ -49,7 +50,6 @@ const Chat = ({
 
     useEffect(() => {
         if(socket) {
-            console.log(socket)
             socket.on('refresh messages', () => {
                 refreshMessages(match.params.chat_id)
             })

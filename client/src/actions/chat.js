@@ -1,5 +1,6 @@
 import axios from 'axios'
-import { GET_CHAT, CLEAR_CHAT, SEND_MESSAGE, REFRESH_MESSAGES, UPDATE_LOCAL_MESSAGES, UPDATE_MESSAGES } from './types'
+import { GET_CHAT, CLEAR_CHAT, SEND_MESSAGE, REFRESH_MESSAGES, UPDATE_LOCAL_MESSAGES, UPDATE_MESSAGES, GET_CHATS, CHATS_FAIL } from './types'
+import { getChats } from './chats'
 
 // Clear
 export const clearChat = () => dispatch => {
@@ -65,5 +66,27 @@ export const refreshMessages = chat_id => async dispatch => {
         console.log('refresh done')
     } catch (err) {
         console.log(err)
+    }
+}
+
+export const createChat = ({name}) => async dispatch => {
+    try {
+        const body = { name: name }
+        const config = {
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        }
+
+        await axios.post('/api/chats', body, config)
+        const res = await axios.get('/api/chats')
+        dispatch({
+            type: GET_CHATS,
+            payload: res.data
+        })
+    } catch (err) {
+        dispatch({
+            type: CHATS_FAIL
+        })
     }
 }
