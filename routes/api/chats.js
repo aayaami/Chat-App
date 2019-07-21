@@ -11,8 +11,13 @@ const Chat = require('../../models/Chat')
 // @desc    Get chats
 // @access  Private
 router.get('/', auth, async (req, res) => {
+    let searchOptions = {}
+    if (req.query.name != null && req.query.name !== '') {
+        searchOptions.name = new RegExp(req.query.name, 'i');
+    }
     try {
-        const chats = await Chat.find({}).select("name").select("joinRequests")
+        console.log(searchOptions)
+        const chats = await Chat.find(searchOptions).select("name").select("joinRequests")
 
         if(!chats) {
             return res.status(400).json({ msg: 'No chats'})
@@ -102,33 +107,31 @@ router.put('/joinrequest/:chat_id', auth, async (req, res) => {
 router.put('/acceptrequest/:chat_id/:user_id', auth, async (req, res) => {
     try {
         const chat = await Chat.findById(req.params.chat_id)
+        const user = await User.findById(req.params.user_id)
 
         if(!chat) {
             return res.status(401).json({ msg: 'Chat does not exist' })
         }
 
-        let isMatchUser = await chat.users.map(user => user.user).indexOf(req.params.user_id)
-        let isMatchAdmin = await chat.admins.map(user => user.user).indexOf(req.user.id)
+        let joinRequestIndex = await chat.joinRequests.map(user => user.user).indexOf(req.params.user_id)
 
-        if(isMatchUser !== -1) {
-            isMatchUser = 1
-        } else {
+        if(joinRequestIndex === -1) {
             return res.status(404).json({ errors: [{msg: 'No such user'}] })
         }
 
-        if(isMatchAdmin !== -1) {
-            isMatchAdmin = 1
-        } else {
-            return res.status(401).json({ errors: [{msg: 'You are not an admin'}] })
-        }
 
-        if(isMatchUser === 1 && isMatchAdmin === 1) {
-            index = await chat.users.map(user => user.user).indexOf(req.params.user_id)
-            chat.users[index].isMember = true
-            await chat.save()
-        } else {
+        let adminIndex = await chat.admins.map(user => user.user).indexOf(req.user.id)
+
+        if(adminIndex === -1) {
             return res.status(401).json({ errors: [{msg: 'You are not an admin'}] })
         }
+        
+        chat.users.push({ user: req.params.user_id })
+        user.userChats.push({ chat: req.params.chat_id })
+        chat.joinRequests.splice(joinRequestIndex, 1)
+        
+        await chat.save()
+        await user.save()
 
         res.json(chat)
 
@@ -330,9 +333,9 @@ router.get('/messages/:chat_id', auth, async (req, res) => {
 // @access  Private
 router.get('/:chat_id', auth, async (req, res) => {
     try {
-        console.log(req.params.chat_id)
         const chat = await Chat.findById(req.params.chat_id)
             .populate({ path:'messages.user', select: 'name' })
+            .populate({ path:'joinRequests.user', select: 'name' })
 
         if(!chat) {
             return res.status(401).json({ msg: 'Chat does not exist' })

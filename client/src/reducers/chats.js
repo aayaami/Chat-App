@@ -1,4 +1,4 @@
-import { GET_CHATS, CHATS_FAIL } from '../actions/types'
+import { GET_CHATS, CHATS_FAIL, FIND_CHATS } from '../actions/types'
 
 const initialState = {
     chats: null,
@@ -9,6 +9,7 @@ export default function(state = initialState, action) {
     const { type, payload } = action
     switch(type) {
         case GET_CHATS:
+        case FIND_CHATS:
             return {
                 ...state,
                 chats: payload,

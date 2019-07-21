@@ -1,5 +1,5 @@
 import axios from 'axios'
-import { GET_CHATS, CHATS_FAIL, GET_CHAT } from './types'
+import { GET_CHATS, CHATS_FAIL, GET_CHAT, FIND_CHATS } from './types'
 
 
 // Get chat names
@@ -54,14 +54,28 @@ export const joinRequest = (chat_id) => async dispatch => {
                 'Content-Type': 'application/json'
             }
         }
-        console.log(body)
         await axios.put(`/api/chats/joinrequest/${chat_id}`, body, config)
 
-        console.log('wtf')
         const res = await axios.get('/api/chats')
 
         dispatch({
             type: GET_CHATS,
+            payload: res.data
+        })
+    } catch (err) {
+        dispatch({
+            type: CHATS_FAIL
+        })
+    }
+}
+
+export const findChats = name => async dispatch => {
+    try {
+        const res = await axios.get(`/api/chats?name=${name}`)
+        console.log(res.data)
+
+        dispatch({
+            type: FIND_CHATS,
             payload: res.data
         })
     } catch (err) {

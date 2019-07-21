@@ -1,4 +1,4 @@
-import React, { useEffect, Fragment } from 'react'
+import React, { useEffect, Fragment, useState } from 'react'
 import PropTypes from 'prop-types'
 import { getChat, clearChat, refreshMessages } from '../../actions/chat'
 import { connectSocket, disconnectSocket } from '../../actions/socket'
@@ -6,6 +6,7 @@ import { connect } from 'react-redux'
 import Messages from './Messages'
 import MessageForm from './MessageForm'
 import io from 'socket.io-client'
+import JoinRequests from './JoinRequests';
 
 
 const Chat = ({ 
@@ -18,6 +19,8 @@ const Chat = ({
     disconnectSocket,
     refreshMessages
 }) => {
+
+    const[isAdmin, setIsAdmin] = useState(false)
 
     useEffect(() => {
         getChat(match.params.chat_id)
@@ -54,12 +57,22 @@ const Chat = ({
                 refreshMessages(match.params.chat_id)
             })
         }
-        
+
+        if(!loading) {
+            chat.admins.map(admin => {
+                if(admin.user === user._id) {
+                    setIsAdmin(true)
+                }
+            })
+        }
     }, [socketLoading])
+
+    
 
     return !loading ? ( 
         
         <Fragment>
+            { isAdmin ? <JoinRequests joinRequests={chat.joinRequests} chat_id={chat._id} /> : null }
             <Messages messages={chat.messages}/>
             <MessageForm userId={user._id} userName={user.name} chatId={chat._id} />
         </Fragment>) : (<Fragment>Loading</Fragment>)
