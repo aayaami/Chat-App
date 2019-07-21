@@ -1,20 +1,25 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { Link } from 'react-router-dom'
+import { getUserChats } from '../../actions/chats'
 
-const UserChats = ({ auth: {user}}) => {
-    return user ? (<div>
-        {user.userChats.map(chat =>  <div key={chat.chat._id} ><Link to={`/chats/${chat.chat._id}`}>{chat.chat.name}</Link></div>)}
+const UserChats = ({ userChats, getUserChats }) => {
+    useEffect(() => {
+        getUserChats()
+    }, [])
+    return userChats ? (<div>
+        {userChats.map(chat =>  <div key={chat._id} ><Link to={`/chats/${chat._id}`}>{chat.name}</Link></div>)}
     </div>) : (<div>Loading</div>)
 }
 
 UserChats.propTypes = {
-    auth: PropTypes.object.isRequired
+    getUserChats: PropTypes.func.isRequired,
+    
 }
 
 const mapStateToProps = state => ({
-    auth: state.auth
+    userChats: state.chats.userChats
 })
 
-export default connect(mapStateToProps, {})(UserChats)
+export default connect(mapStateToProps, { getUserChats })(UserChats)

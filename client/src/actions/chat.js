@@ -69,7 +69,7 @@ export const createChat = ({name}) => async dispatch => {
         }
 
         await axios.post('/api/chats', body, config)
-        const res = await axios.get('/api/chats')
+        const res = await axios.get('/api/chats/find')
         dispatch({
             type: GET_CHATS,
             payload: res.data

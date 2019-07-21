@@ -10,10 +10,6 @@ const ChatSchema = new mongoose.Schema({
             user: {
                 type: mongoose.Schema.Types.ObjectId,
                 ref: 'user'
-            },
-            isMember: {
-                type: Boolean,
-                default: false
             }
         }
     ],

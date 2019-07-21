@@ -6,7 +6,9 @@ import { connect } from 'react-redux'
 import Messages from './Messages'
 import MessageForm from './MessageForm'
 import io from 'socket.io-client'
-import JoinRequests from './JoinRequests';
+import JoinRequests from './JoinRequests'
+import ChatUsersList from './ChatUsersList'
+import { loadUser } from '../../actions/auth'
 
 
 const Chat = ({ 
@@ -17,13 +19,15 @@ const Chat = ({
     socket: { socket, socketLoading }, 
     connectSocket, 
     disconnectSocket,
-    refreshMessages
+    refreshMessages,
+    loadUser
 }) => {
 
     const[isAdmin, setIsAdmin] = useState(false)
 
     useEffect(() => {
         getChat(match.params.chat_id)
+        loadUser()
         return () => {
             clearChat()
         }
@@ -58,7 +62,7 @@ const Chat = ({
             })
         }
 
-        if(!loading) {
+        if(user && !loading) {
             chat.admins.map(admin => {
                 if(admin.user === user._id) {
                     setIsAdmin(true)
@@ -67,15 +71,18 @@ const Chat = ({
         }
     }, [socketLoading])
 
-    
-
-    return !loading ? ( 
-        
-        <Fragment>
+    if(!loading && !socketLoading && user) {
+        return (
+            <Fragment>
             { isAdmin ? <JoinRequests joinRequests={chat.joinRequests} chat_id={chat._id} /> : null }
+            <ChatUsersList users={chat.users} />
             <Messages messages={chat.messages}/>
             <MessageForm userId={user._id} userName={user.name} chatId={chat._id} />
-        </Fragment>) : (<Fragment>Loading</Fragment>)
+         </Fragment>
+        )
+    } else {
+        return <Fragment>Loading</Fragment>
+    }
 }
 
 Chat.propTypes = {
@@ -84,6 +91,7 @@ Chat.propTypes = {
     auth: PropTypes.object.isRequired,
     clearChat: PropTypes.func.isRequired,
     refreshMessages: PropTypes.func.isRequired,
+    loadUser: PropTypes.func.isRequired,
 }
 
 const mapStateToProps = state => ({
@@ -92,4 +100,4 @@ const mapStateToProps = state => ({
     socket: state.socket
 })
 
-export default connect(mapStateToProps, { getChat, clearChat, connectSocket, disconnectSocket, refreshMessages })(Chat)
+export default connect(mapStateToProps, { getChat, clearChat, connectSocket, disconnectSocket, refreshMessages, loadUser })(Chat)

@@ -1,11 +1,11 @@
 import axios from 'axios'
-import { GET_CHATS, CHATS_FAIL, GET_CHAT, FIND_CHATS } from './types'
+import { GET_CHATS, CHATS_FAIL, GET_CHAT, FIND_CHATS, GET_USER_CHATS } from './types'
 
 
 // Get chat names
 export const getChats = () => async dispatch => {
     try {
-        const res = await axios.get('/api/chats')
+        const res = await axios.get('/api/chats/find')
 
         dispatch({
             type: GET_CHATS,
@@ -56,7 +56,7 @@ export const joinRequest = (chat_id) => async dispatch => {
         }
         await axios.put(`/api/chats/joinrequest/${chat_id}`, body, config)
 
-        const res = await axios.get('/api/chats')
+        const res = await axios.get('/api/chats/find')
 
         dispatch({
             type: GET_CHATS,
@@ -71,8 +71,7 @@ export const joinRequest = (chat_id) => async dispatch => {
 
 export const findChats = name => async dispatch => {
     try {
-        const res = await axios.get(`/api/chats?name=${name}`)
-        console.log(res.data)
+        const res = await axios.get(`/api/chats/find?name=${name}`)
 
         dispatch({
             type: FIND_CHATS,
@@ -82,5 +81,18 @@ export const findChats = name => async dispatch => {
         dispatch({
             type: CHATS_FAIL
         })
+    }
+}
+
+export const getUserChats = () => async dispatch => {
+    try {
+        const res = await axios.get('/api/chats/me')
+
+        dispatch({
+            type: GET_USER_CHATS,
+            payload: res.data
+        })
+    } catch (err) {
+        
     }
 }

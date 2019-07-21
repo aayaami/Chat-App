@@ -1,8 +1,9 @@
-import { GET_CHATS, CHATS_FAIL, FIND_CHATS } from '../actions/types'
+import { GET_CHATS, CHATS_FAIL, FIND_CHATS, GET_USER_CHATS } from '../actions/types'
 
 const initialState = {
     chats: null,
-    loading: true
+    loading: true,
+    userChats: []
 }
 
 export default function(state = initialState, action) {
@@ -15,10 +16,14 @@ export default function(state = initialState, action) {
                 chats: payload,
                 loading: false
             }
+        case GET_USER_CHATS:
+            return {
+                ...state,
+                userChats: payload
+            }
         case CHATS_FAIL:
             return {
                 chats: null,
-                chat: null,
                 loading: true
             }
         default:

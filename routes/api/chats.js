@@ -7,20 +7,59 @@ const Chat = require('../../models/Chat')
 
 
 
-// @route   GET api/chats
+// @route   GET api/chats/find
 // @desc    Get chats
 // @access  Private
-router.get('/', auth, async (req, res) => {
+router.get('/find', auth, async (req, res) => {
     let searchOptions = {}
     if (req.query.name != null && req.query.name !== '') {
         searchOptions.name = new RegExp(req.query.name, 'i');
     }
     try {
-        console.log(searchOptions)
-        const chats = await Chat.find(searchOptions).select("name").select("joinRequests")
+        const chats = await Chat.find(searchOptions).select("name").select("users").select("joinRequests").limit(10).exec()
+        // const chats = await Chat.find(searchOptions).select("name").select("joinRequests").limit(10).exec()
 
         if(!chats) {
-            return res.status(400).json({ msg: 'No chats'})
+            return res.status(400).json({ msg: 'No chats' })
+        }
+        
+        const id = req.user.id.replace(/^"(.+(?="$))"$/, '$1')
+
+        let filteredChats = await chats.filter(chat => {
+            let userFound = false
+            let requestFound = false
+            chat.users.forEach(user => {
+                if(id == user.user) {
+                    userFound = true
+                }
+            })
+            chat.joinRequests.forEach(joinRequests => {
+                if(id == joinRequests.user) {
+                    requestFound = true;
+                }
+            })
+            if(!userFound && !requestFound) {
+                return chat
+            }
+        })
+
+        res.json(filteredChats)
+
+    } catch (err) {
+        console.error(err.message)
+        res.status(500).send('Server error')
+    }
+})
+
+// @route   GET api/chats/me
+// @desc    Get my chats
+// @access  Private
+router.get('/me', auth, async (req, res) => {
+    try {
+        const chats = await Chat.find({ users: { $elemMatch: { user: req.user.id } } })
+
+        if(!chats) {
+            return res.status(400).json({ msg: 'No chats' })
         }
 
         res.json(chats)
@@ -57,7 +96,7 @@ router.post('/', auth, [
         })
 
         newChat.admins.push({ user: req.user.id })
-        newChat.users.push({ user: req.user.id, isMember: true })
+        newChat.users.push({ user: req.user.id })
 
         user.userChats.push({chat: newChat._id})
 
@@ -163,7 +202,7 @@ router.put('/message/:chat_id', [
 
         let isMatchUser = await chat.users.map(user => user.user).indexOf(req.user.id)
 
-        if(isMatchUser !== -1 && chat.users[isMatchUser].isMember === true) {
+        if(isMatchUser !== -1) {
             chat.messages.push({ text: req.body.text, user: req.user.id })
         } else {
             return res.status(400).json({ errors: [{msg: 'Not authorized'}] })
@@ -335,13 +374,14 @@ router.get('/:chat_id', auth, async (req, res) => {
     try {
         const chat = await Chat.findById(req.params.chat_id)
             .populate({ path:'messages.user', select: 'name' })
+            .populate({ path:'users.user', select: 'name' })
             .populate({ path:'joinRequests.user', select: 'name' })
 
         if(!chat) {
             return res.status(401).json({ msg: 'Chat does not exist' })
         }
         
-        let isMatchUser = await chat.users.map(user => user.user).indexOf(req.user.id)
+        let isMatchUser = await chat.users.map(user => user.user._id).indexOf(req.user.id)
 
         if(isMatchUser === -1) {
             return res.status(400).json({ msg: 'Not authorized'})

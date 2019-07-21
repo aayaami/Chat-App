@@ -11,6 +11,7 @@ const JoinRequests = ({joinRequests, acceptJoinRequest, chat_id}) => {
     return (
         <div>
             { joinRequests.length !== 0 ? <div>
+                <div>Join requests list:</div>
                 {joinRequests.map(joinRequest => 
                 <div key={joinRequest._id}>
                     {joinRequest.user.name}
