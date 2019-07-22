@@ -29,8 +29,8 @@ const Login = ({ login, isAuthenticated }) => {
     const { email, password } = formData
 
     return (
-        <Fragment>
-            <form onSubmit={e => handleSubmit(e)} className="container">
+        <section className="container">
+            <form onSubmit={e => handleSubmit(e)} className="container-full form">
                 <h1>Login</h1>
                 <div>
                     <input 
@@ -40,6 +40,7 @@ const Login = ({ login, isAuthenticated }) => {
                     placeholder={email}
                     onChange={e => handleChange(e)}
                     required
+                    placeholder="email"
                     />
                 </div>
                 <div>
@@ -51,13 +52,14 @@ const Login = ({ login, isAuthenticated }) => {
                     onChange={e => handleChange(e)}
                     required
                     minLength="6"
+                    placeholder="password"
                     />
                 </div>
                 <div>
-                    <button type="submit">Login</button> 
+                    <button type="submit" className="btn btn-success">Login</button> 
                 </div>
             </form>
-        </Fragment>
+        </section>
     )
 }
 

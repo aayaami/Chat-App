@@ -1,8 +1,11 @@
 import React from 'react'
+import Login from '../auth/Login';
+import Register from '../auth/Register';
 
 const Landing = () => {
     return (
-        <h1 className="container text-center">Welcome to the Chat App</h1>
+        <section className="container">
+        </section>
     )
 }
 

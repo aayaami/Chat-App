@@ -37,8 +37,8 @@ const Register = ({ setAlert, register, isAuthenticated }) => {
 
 
     return (
-        <Fragment>
-            <form onSubmit={e => handleSubmit(e)} className="container">
+        <section className="container">
+            <form onSubmit={e => handleSubmit(e)} className="container-full form">
                 <h1>Register</h1>
                 <div>
                     <input 
@@ -83,10 +83,10 @@ const Register = ({ setAlert, register, isAuthenticated }) => {
                     />
                 </div>
                 <div>
-                    <button type="submit">Register</button>
+                    <button type="submit" className="btn btn-success">Register</button>
                 </div>
             </form>
-        </Fragment>
+        </section>
     )
 }
 

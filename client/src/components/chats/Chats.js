@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, Fragment } from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { getChats } from '../../actions/chats'
@@ -7,6 +7,7 @@ import NewChatForm from './NewChatForm'
 import { joinRequest } from '../../actions/chats'
 import { loadUser } from '../../actions/auth';
 import SearchChatsForm from './SearchChatsForm';
+import UserChats from './UserChats';
 
 const Chats = ({ auth: {user}, getChats, loadUser, joinRequest, chats: { chats } }) => {
     useEffect(() => {
@@ -14,11 +15,22 @@ const Chats = ({ auth: {user}, getChats, loadUser, joinRequest, chats: { chats }
         
     }, [getChats])
 
-    return chats ? (<div>
-        <NewChatForm />
-        <SearchChatsForm />
-        {chats.map(chat =>  <div key={chat._id} ><Link to={`/chats/${chat._id}`}>{chat.name}</Link> <button onClick={() => joinRequest(chat._id)}>Send join request</button> </div>)}
-    </div>) : (<div>Loading</div>)
+    return chats ? (
+    <Fragment>
+        <section className="container">
+            <ul>
+                <NewChatForm />
+                <SearchChatsForm />
+                
+                {chats.map(chat =>  <li key={chat._id} ><Link to={`/chats/${chat._id}`}>{chat.name}</Link> <button onClick={() => joinRequest(chat._id)}>Send join request</button> </li>)}
+            </ul>
+        </section>
+
+        <section className="aside">
+            <UserChats />
+        </section>
+    </Fragment>
+    ) : (<div>Loading</div>)
 }
 
 Chats.propTypes = {

@@ -1,16 +1,17 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, Fragment } from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { Link } from 'react-router-dom'
 import { getUserChats } from '../../actions/chats'
 
-const UserChats = ({ userChats, getUserChats }) => {
+const UserChats = ({ userChats, getUserChats, match }) => {
     useEffect(() => {
         getUserChats()
     }, [])
-    return userChats ? (<div>
-        {userChats.map(chat =>  <div key={chat._id} ><Link to={`/chats/${chat._id}`}>{chat.name}</Link></div>)}
-    </div>) : (<div>Loading</div>)
+    
+    return userChats ? (<ul>
+        {userChats.map(chat =>  <li key={chat._id} ><Link to={`/chats/${chat._id}`}>{chat.name}</Link></li>)}
+    </ul>) : (<div>Loading</div>)
 }
 
 UserChats.propTypes = {

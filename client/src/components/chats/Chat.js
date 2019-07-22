@@ -62,7 +62,7 @@ const Chat = ({
             })
         }
 
-        if(user && !loading) {
+        if(user && !loading && chat) {
             chat.admins.map(admin => {
                 if(admin.user === user._id) {
                     setIsAdmin(true)
@@ -74,10 +74,15 @@ const Chat = ({
     if(!loading && !socketLoading && user) {
         return (
             <Fragment>
-            { isAdmin ? <JoinRequests joinRequests={chat.joinRequests} chat_id={chat._id} /> : null }
-            <ChatUsersList users={chat.users} />
-            <Messages messages={chat.messages}/>
-            <MessageForm userId={user._id} userName={user.name} chatId={chat._id} />
+            {/* { isAdmin ? <JoinRequests joinRequests={chat.joinRequests} chat_id={chat._id} /> : null } */}
+            <section className="aside">
+                <ChatUsersList users={chat.users} />
+            </section>
+
+            <section className="container">
+                <Messages messages={chat.messages}/>
+                <MessageForm userId={user._id} userName={user.name} chatId={chat._id} />
+            </section>
          </Fragment>
         )
     } else {

@@ -1,12 +1,10 @@
 import React, { Fragment } from 'react'
 
 const ChatUsersList = ({ users }) => {
-    return users ? (<Fragment>
-        <div>User List</div>
-        <div>=====================</div>
+    return users ? (<ul>
+        <div>Users:</div>
         {users.map(user => <li key={user._id}>{user.user.name}</li>)}
-        <div>=====================</div>
-    </Fragment>) : (<Fragment>Loading</Fragment>)
+    </ul>) : (<Fragment>Loading</Fragment>)
 }
 
 export default ChatUsersList

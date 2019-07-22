@@ -3,9 +3,9 @@ import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 
 const Messages = ({ chat: {messages} }) => {
-    return messages ? (<Fragment>
+    return messages ? (<ul className="messages">
         {messages.map(message => <li key={message._id}>{message.user.name}: {message.text}</li>)}
-    </Fragment>) : (<Fragment>Loading</Fragment>)
+    </ul>) : (<Fragment>Loading</Fragment>)
 }
 
 Messages.propTypes = {

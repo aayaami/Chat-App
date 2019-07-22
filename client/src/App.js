@@ -27,15 +27,16 @@ function App() {
     <Provider store={store}>
       <Router>
         <Fragment>
-          <Navbar />
-          <Route exact path="/" component={Landing} />
-          <section className="container">
+          <section className="grid-wrapper">
+            <div className="sidebar"></div>
+            <div className="aside"></div>
+            <Navbar />
             <Alert />
             <Switch>
+              <Route exact path="/" component={Landing} />
               <Route exact path="/login" component={Login} />
               <Route exact path="/register" component={Register} />
               <PrivateRoute exact path="/chats" component={Chats} />
-              <PrivateRoute exact path="/chats/me" component={UserChats} />
               <PrivateRoute exact path="/chats/:chat_id" component={Chat} />
             </Switch>
           </section>

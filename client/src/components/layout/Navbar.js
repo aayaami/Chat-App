@@ -8,7 +8,6 @@ import PropTypes from 'prop-types'
 const Navbar = ({ logout, auth: { isAuthenticated, loading } }) => {
     const authLinks = (
         <ul>
-            <li><Link to="/chats/me">My chats</Link></li>
             <li><Link to="/chats">Chats</Link></li>
             <li><a onClick={logout} href="#!">Logout</a></li>
         </ul>
@@ -21,7 +20,7 @@ const Navbar = ({ logout, auth: { isAuthenticated, loading } }) => {
         </ul>
     )
     return (
-        <nav className="navbar">
+        <nav className="header navbar">
             <h1><Link to="/">Chat App</Link></h1>
             { !loading && <Fragment>{ isAuthenticated ? authLinks : guestLinks }</Fragment> }
         </nav>
