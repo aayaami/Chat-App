@@ -82,13 +82,8 @@ export const createChat = ({name}) => async dispatch => {
 }
 
 export const acceptJoinRequest = (user_id, chat_id) => async dispatch => {
-    const config = {
-        headers: {
-            'Content-Type': 'application/json'
-        }
-    }
     try {
-        const res = axios.put(`/api/chats/acceptrequest/${chat_id}/${user_id}`)
+        await axios.put(`/api/chats/acceptrequest/${chat_id}/${user_id}`)
     } catch (err) {
         console.log(err)
     }

@@ -1,15 +1,15 @@
-import React, { useEffect, Fragment, useState } from 'react'
+import React, { useEffect, Fragment, useState, useRef } from 'react'
 import PropTypes from 'prop-types'
 import { getChat, clearChat, refreshMessages } from '../../actions/chat'
 import { connectSocket, disconnectSocket } from '../../actions/socket'
 import { connect } from 'react-redux'
 import Messages from './Messages'
 import MessageForm from './MessageForm'
-import io from 'socket.io-client'
 import JoinRequests from './JoinRequests'
 import ChatUsersList from './ChatUsersList'
 import { loadUser } from '../../actions/auth'
 
+const scrollToRef = (ref) => window.scrollTo(0, ref.current.offsetTop)
 
 const Chat = ({ 
     auth: { user }, 
@@ -23,37 +23,35 @@ const Chat = ({
     loadUser
 }) => {
 
+    
+
+    const myRef = useRef(null)
+   const executeScroll = () => scrollToRef(myRef)
+
     const[isAdmin, setIsAdmin] = useState(false)
 
     useEffect(() => {
         getChat(match.params.chat_id)
         loadUser()
         return () => {
-            clearChat()
+            // clearChat()
         }
     }, [getChat])
 
-
     useEffect(() => {
-        
         if(!loading) {
-            const tempSocket = io('http://localhost:5000')
             if(chat) {
-                tempSocket.emit('join chat', chat._id)
-                connectSocket(tempSocket)
+                socket.emit('join chat', chat._id)
             }
         }
-
-    }, [loading, connectSocket])
-
-    useEffect(() => {
         return () => {
-            if(socket) {
-                disconnectSocket()
+            if(socket && chat) {
+                // disconnectSocket()
                 socket.emit('leave chat', chat._id)
+                clearChat()
             }
         }
-    }, [socketLoading])
+    }, [socketLoading, loading])
 
     useEffect(() => {
         if(socket) {
@@ -69,12 +67,13 @@ const Chat = ({
                 }
             })
         }
-    }, [socketLoading])
+    }, [loading])
 
     if(!loading && !socketLoading && user) {
         return (
             <Fragment>
-            {/* { isAdmin ? <JoinRequests joinRequests={chat.joinRequests} chat_id={chat._id} /> : null } */}
+            { isAdmin ? <section className="sidebar"><JoinRequests joinRequests={chat.joinRequests} chat_id={chat._id} />
+            </section> : null }
             <section className="aside">
                 <ChatUsersList users={chat.users} />
             </section>

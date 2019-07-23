@@ -1,11 +1,35 @@
-import React, { Fragment } from 'react'
+import React, { Fragment, useEffect, useRef } from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 
 const Messages = ({ chat: {messages} }) => {
+
+    const scroll = useRef(null)
+
+    // let bottom
+
+    // const handleScroll = e => {
+    //     bottom = e.target.scrollHeight - e.target.scrollTop === e.target.clientHeight
+    //     if (bottom) {
+    //         bottom = true
+    //         console.log('bottom')
+    //     }
+    // }
+
+    useEffect(() => {
+        if(scroll) {
+            scroll.current.scrollIntoView({behavior: 'smooth'}) 
+        }
+    }, [messages])
+
     return messages ? (<ul className="messages">
+        {/* <ul className="messages" onScroll={handleScroll}></ul> */}
         {messages.map(message => <li key={message._id}>{message.user.name}: {message.text}</li>)}
-    </ul>) : (<Fragment>Loading</Fragment>)
+        <div ref={scroll}></div>
+    </ul>
+    
+    
+    ) : (<Fragment>Loading</Fragment>)
 }
 
 Messages.propTypes = {

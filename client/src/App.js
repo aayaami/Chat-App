@@ -13,7 +13,8 @@ import { loadUser } from './actions/auth'
 import Chats from './components/chats/Chats'
 import PrivateRoute from './components/routing/PrivateRoute'
 import Chat from './components/chats/Chat';
-import UserChats from './components/chats/UserChats';
+import WebSocketIo from './utils/WebSocketIo';
+
 
 if(localStorage.token) {
   setAuthToken(localStorage.token)
@@ -23,13 +24,13 @@ function App() {
   useEffect(() => {
     store.dispatch(loadUser())
   }, [])
+
   return (
     <Provider store={store}>
       <Router>
         <Fragment>
+        <WebSocketIo />
           <section className="grid-wrapper">
-            <div className="sidebar"></div>
-            <div className="aside"></div>
             <Navbar />
             <Alert />
             <Switch>
@@ -46,4 +47,5 @@ function App() {
   )
 }
 
-export default App;
+
+export default App

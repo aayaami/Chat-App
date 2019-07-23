@@ -1,4 +1,4 @@
-import React, { Fragment, useState } from 'react'
+import React, { useState } from 'react'
 import { Redirect } from 'react-router-dom'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
@@ -37,7 +37,6 @@ const Login = ({ login, isAuthenticated }) => {
                     type="email" 
                     name="email" 
                     value={email} 
-                    placeholder={email}
                     onChange={e => handleChange(e)}
                     required
                     placeholder="email"
@@ -48,7 +47,6 @@ const Login = ({ login, isAuthenticated }) => {
                     type="password" 
                     name="password" 
                     value={password} 
-                    placeholder={password}
                     onChange={e => handleChange(e)}
                     required
                     minLength="6"

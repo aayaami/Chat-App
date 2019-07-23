@@ -10,14 +10,14 @@ const JoinRequests = ({joinRequests, acceptJoinRequest, chat_id}) => {
     }
     return (
         <div>
-            { joinRequests.length !== 0 ? <div>
-                <div>Join requests list:</div>
+            { joinRequests.length !== 0 ? <ul className="accept-list">
+                <h2>Join requests</h2>
                 {joinRequests.map(joinRequest => 
-                <div key={joinRequest._id}>
+                <li key={joinRequest._id}>
                     {joinRequest.user.name}
-                    <button onClick={() => handleClick(joinRequest.user._id, chat_id)}>Accept</button>
-                </div>)}
-            </div> : null}
+                    <button className="btn btn-success" onClick={() => handleClick(joinRequest.user._id, chat_id)}>Accept</button>
+                </li>)}
+            </ul> : null}
         </div>
     )
 }

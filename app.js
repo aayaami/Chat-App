@@ -24,6 +24,7 @@ const server = app.listen(port, () => console.log(`Server started on port ${port
 const io = require('socket.io')(server)
 
 io.on('connection', socket => {
+    console.log(`socket ${socket.id} opened connection`)
     
     socket.on('join chat', (id) => {
         socket.join(id)
@@ -38,5 +39,9 @@ io.on('connection', socket => {
     socket.on('leave chat', (id) => {
         socket.leave(id)
         console.log(`socket left chat ${id}`)
+    })
+
+    socket.on('disconnect', () => {
+        console.log(`socket ${socket.id} closed connection`)
     })
 })

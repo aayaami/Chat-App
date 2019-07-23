@@ -12,13 +12,10 @@ const NewChatForm = ({ createChat }) => {
     }
     
     return (
-        <div>
-            
             <form onSubmit={e => handleSubmit(e)} className="form">
                 <div><label>Create new Chat</label></div>
                 <input type="text" name="name" placeholder="Chat name" value={name} onChange={e => setName(e.target.value)} required/>
-            </form> 
-        </div>
+            </form>
     )
 }
 

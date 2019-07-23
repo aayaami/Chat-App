@@ -18,11 +18,13 @@ const Chats = ({ auth: {user}, getChats, loadUser, joinRequest, chats: { chats }
     return chats ? (
     <Fragment>
         <section className="container">
-            <ul>
-                <NewChatForm />
-                <SearchChatsForm />
                 
-                {chats.map(chat =>  <li key={chat._id} ><Link to={`/chats/${chat._id}`}>{chat.name}</Link> <button onClick={() => joinRequest(chat._id)}>Send join request</button> </li>)}
+                
+            <ul className="accept-list">
+                <li><NewChatForm /></li>
+                <li><SearchChatsForm /></li>
+                
+                {chats.map(chat =>  <li key={chat._id} ><h3>{chat.name}</h3><button className="btn btn-success" onClick={() => joinRequest(chat._id)}>Send join request</button> </li>)}
             </ul>
         </section>
 

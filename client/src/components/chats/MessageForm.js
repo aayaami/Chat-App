@@ -1,4 +1,4 @@
-import React, { useState, Fragment } from 'react'
+import React, { useState } from 'react'
 import { connect } from 'react-redux'
 import { sendMessage } from '../../actions/chat'
 import PropTypes from 'prop-types'
@@ -27,7 +27,7 @@ const MessageForm = ({ userId, chatId, sendMessage, userName, socket }) => {
     }
 
     const onEnterPress = e => {
-        if(e.keyCode == 13 && e.shiftKey == false) {
+        if(e.keyCode === 13 && e.shiftKey === false) {
             e.preventDefault()
             handleSubmit(e)
           }

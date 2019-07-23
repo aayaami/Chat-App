@@ -14,8 +14,9 @@ const SearchChatsForm = ({ findChats }) => {
     return (
         <div>
             <form onSubmit={e => handleSubmit(e)} className="form">
-                <div><label>Search</label></div>
-                <input type="text" name="name" placeholder="Type chat name" value={name} onChange={e => setName(e.target.value)} required/>
+                <div><label>Chat Search</label></div>
+                <input type="text" name="name" placeholder="Chat name" value={name} onChange={e => setName(e.target.value)}/>
+                <button className="btn" type="submit">Reset</button>
             </form> 
         </div>
     )
