@@ -1,5 +1,5 @@
 import axios from 'axios'
-import { GET_CHAT, CLEAR_CHAT, SEND_MESSAGE, UPDATE_MESSAGES, GET_CHATS, CHATS_FAIL } from './types'
+import { GET_CHAT, CLEAR_CHAT, UPDATE_MESSAGES, GET_CHATS, CHATS_FAIL } from './types'
 
 // Clear
 export const clearChat = () => dispatch => {
@@ -27,7 +27,7 @@ export const getChat = chat_id => async dispatch => {
     }
 }
 
-export const sendMessage = ({id, text, chat_id, userName, socket}) => async dispatch => {
+export const sendMessage = ({text, chat_id, socket}) => async dispatch => {
     try {
         const body = { text: text }
         const config = {
@@ -35,11 +35,7 @@ export const sendMessage = ({id, text, chat_id, userName, socket}) => async disp
                 'Content-Type': 'application/json'
             }
         }
-        const res = await axios.put(`/api/chats/message/${chat_id}`, body, config)
-        dispatch({
-            type: SEND_MESSAGE,
-            payload: res.data
-        })
+        await axios.put(`/api/chats/message/${chat_id}`, body, config)
         await socket.socket.emit('update messages', chat_id)
     } catch (err) {
         console.log(err)
@@ -59,7 +55,7 @@ export const refreshMessages = chat_id => async dispatch => {
     }
 }
 
-export const createChat = ({name}) => async dispatch => {
+export const createChat = ({name, socket, id}) => async dispatch => {
     try {
         const body = { name: name }
         const config = {
@@ -69,11 +65,8 @@ export const createChat = ({name}) => async dispatch => {
         }
 
         await axios.post('/api/chats', body, config)
-        const res = await axios.get('/api/chats/find')
-        dispatch({
-            type: GET_CHATS,
-            payload: res.data
-        })
+        await socket.emit('update chatlist')
+        await socket.emit('update chats', id)
     } catch (err) {
         dispatch({
             type: CHATS_FAIL
@@ -81,9 +74,11 @@ export const createChat = ({name}) => async dispatch => {
     }
 }
 
-export const acceptJoinRequest = (user_id, chat_id) => async dispatch => {
+export const acceptJoinRequest = (user_id, chat_id, socket) => async dispatch => {
     try {
         await axios.put(`/api/chats/acceptrequest/${chat_id}/${user_id}`)
+        await socket.emit('update chat', chat_id)
+        await socket.emit('update chats', user_id)
     } catch (err) {
         console.log(err)
     }

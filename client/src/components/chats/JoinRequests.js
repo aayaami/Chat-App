@@ -3,10 +3,10 @@ import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { acceptJoinRequest } from '../../actions/chat'
 
-const JoinRequests = ({joinRequests, acceptJoinRequest, chat_id}) => {
+const JoinRequests = ({joinRequests, acceptJoinRequest, chat_id, socket: { socket }}) => {
     
     const handleClick = (user_id, chat_id) => {
-        acceptJoinRequest(user_id, chat_id)
+        acceptJoinRequest(user_id, chat_id, socket)
     }
     return (
         <div>
@@ -23,7 +23,12 @@ const JoinRequests = ({joinRequests, acceptJoinRequest, chat_id}) => {
 }
 
 JoinRequests.propTypes = {
-    acceptJoinRequest: PropTypes.func.isRequired
+    acceptJoinRequest: PropTypes.func.isRequired,
+    socket: PropTypes.object.isRequired,
 }
 
-export default connect(null, {acceptJoinRequest})(JoinRequests)
+const mapStateToProps = state => ({
+    socket: state.socket
+})
+
+export default connect(mapStateToProps, {acceptJoinRequest})(JoinRequests)

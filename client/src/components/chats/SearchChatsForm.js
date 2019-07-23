@@ -10,7 +10,6 @@ const SearchChatsForm = ({ findChats }) => {
         findChats(name)
         setName('')
     }
-    
     return (
         <div>
             <form onSubmit={e => handleSubmit(e)} className="form">

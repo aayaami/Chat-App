@@ -41,6 +41,20 @@ io.on('connection', socket => {
         console.log(`socket left chat ${id}`)
     })
 
+    socket.on('update chat', (id) => {
+        io.to(id).emit('refresh chat')
+    })
+
+    socket.on('update chatlist', () => {
+        console.log('update')
+        io.emit('refresh chatlist')
+    })
+
+    socket.on('update chats', (id) => {
+        console.log(`update ${id} chats`)
+        io.to(id).emit('refresh chats')
+    })
+    
     socket.on('disconnect', () => {
         console.log(`socket ${socket.id} closed connection`)
     })

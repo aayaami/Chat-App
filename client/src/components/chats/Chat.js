@@ -39,7 +39,7 @@ const Chat = ({
     }, [getChat])
 
     useEffect(() => {
-        if(!loading) {
+        if(!loading && socket) {
             if(chat) {
                 socket.emit('join chat', chat._id)
             }
@@ -57,6 +57,11 @@ const Chat = ({
         if(socket) {
             socket.on('refresh messages', () => {
                 refreshMessages(match.params.chat_id)
+            })
+
+            socket.on('refresh chat', () => {
+                getChat(match.params.chat_id)
+                console.log('got')
             })
         }
 

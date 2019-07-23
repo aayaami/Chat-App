@@ -342,7 +342,7 @@ router.put('/leave/:chat_id', auth, async (req, res) => {
 })
 
 // @route   Get api/chats/messages/:chat_id
-// @desc    Get chat
+// @desc    Get chat messages
 // @access  Private
 router.get('/messages/:chat_id', auth, async (req, res) => {
     try {

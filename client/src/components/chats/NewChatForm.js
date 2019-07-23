@@ -3,11 +3,13 @@ import { connect } from 'react-redux'
 import { createChat } from '../../actions/chat'
 import PropTypes from 'prop-types'
 
-const NewChatForm = ({ createChat }) => {
+const NewChatForm = ({ createChat, socket: { socket }, auth }) => {
     const [name, setName] = useState('')
     const handleSubmit = e => {
         e.preventDefault()
-        createChat({ name: name })
+
+        createChat({ name, socket, id: auth.user._id })
+
         setName('')
     }
     
@@ -20,8 +22,14 @@ const NewChatForm = ({ createChat }) => {
 }
 
 NewChatForm.propTypes = {
-    createChat: PropTypes.func.isRequired
+    createChat: PropTypes.func.isRequired,
+    socket: PropTypes.object.isRequired,
+    auth: PropTypes.object.isRequired,
 }
 
+const mapStateToProps = state => ({
+    socket: state.socket,
+    auth: state.auth
+})
 
-export default connect(null, { createChat })(NewChatForm)
+export default connect(mapStateToProps, { createChat })(NewChatForm)

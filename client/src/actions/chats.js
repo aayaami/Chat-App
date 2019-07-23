@@ -45,7 +45,7 @@ export const getChat = chat_id => async dispatch => {
     }
 }
 
-export const joinRequest = (chat_id) => async dispatch => {
+export const joinRequest = (chat_id, socket) => async dispatch => {
     try {
         
         const body = { chat_id: chat_id }
@@ -57,6 +57,8 @@ export const joinRequest = (chat_id) => async dispatch => {
         await axios.put(`/api/chats/joinrequest/${chat_id}`, body, config)
 
         const res = await axios.get('/api/chats/find')
+
+        await socket.emit('update chat', chat_id)
 
         dispatch({
             type: GET_CHATS,
